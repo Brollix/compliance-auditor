@@ -83,7 +83,7 @@ const ChatBubble = ({ role, content, citations, isLoading, steps }) => (
         <div className="flex flex-col gap-3 min-w-[200px]">
           <div className="flex items-center gap-2 text-corporate-blue font-medium animate-pulse">
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>AI Auditor Procesando...</span>
+            <span>ComplAI Auditor Procesando...</span>
           </div>
           <div className="space-y-1">
             {steps?.map((step, i) => (
@@ -368,7 +368,7 @@ export default function App() {
               <ShieldCheck className="w-5 h-5 text-corporate-blue" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-lg font-bold">AI Auditor Pro</h1>
+              <h1 className="text-lg font-bold">ComplAI Auditor</h1>
               <div className="flex items-center gap-2">
                 <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold flex items-center gap-1">
                   <Zap className="w-3 h-3 text-yellow-500" /> Auditoría en Tiempo Real

@@ -1,4 +1,4 @@
-# AI Auditor Pro
+# ComplAI Auditor
 
 Prototipo de aplicación de escritorio para auditoría de cumplimiento (ISO/UE AI Act) con un flujo de Triple Validación basado en agentes de IA.
 
