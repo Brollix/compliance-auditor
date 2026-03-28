@@ -1,24 +1,111 @@
-# Logs
-logs
+# ========================
+# OS & Editor
+# ========================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ========================
+# Frontend (Node.js / Vite)
+# ========================
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
+node_modules/
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# ========================
+# Backend (Python / FastAPI)
+# ========================
+# Archivos compilados Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos Virtuales
+.venv/
+venv/
+ENV/
+env/
+
+# Cache y herramientas
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ========================
+# Secretos y Variables de Entorno
+# ========================
+# ¡CRÍTICO! Nunca commitear .env con credenciales (como AWS Keys)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ========================
+# Infraestructura (Terraform)
+# ========================
+# Directorio local de inicialización de terraform y modulos
+**/.terraform/*
+
+# Archivos de estado de terraform (PUEDEN CONTENER SECRETOS)
+*.tfstate
+*.tfstate.*
+
+# Archivos de variables con secretos
+*.tfvars
+*.tfvars.json
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Archivos de planes (pueden contener secretos)
+*tfplan*
+
+# Overrides locales
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Configuración CLI
+.terraformrc
+terraform.rc
+
+# ========================
+# Generados / Empaquetados / DBs
+# ========================
+# Bases de datos SQLite locales si hubiera
+*.sqlite3
+*.db
+
+# Zip files generados para deploys de Lambda
+*.zip
+backend_payload.zip
+infra/backend_payload*.zip
+
+# ChromaDB local storage (por si haces pruebas locales)
+chroma_db/
+.chromadb/
