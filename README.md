@@ -1,12 +1,13 @@
 # ComplAI Auditor
 
-Aplicación web para auditoría de cumplimiento (ISO/UE AI Act) con validación basada en agentes de IA y consultas a la API de SAIJ.
+Aplicación de escritorio (Electron) para auditoría de cumplimiento (ISO/UE AI Act) con validación basada en agentes de IA y consultas a la API de SAIJ.
 
 ## Estructura del Proyecto
 
 - **`client/`**: Frontend web en React + Vite + Tailwind CSS.
 - **`server/`**: Backend en FastAPI (Agentes con AWS Bedrock).
 - **`infra/`**: Configuración de Terraform para despliegue en AWS (Lambda).
+- **`main.js`**: (Ubicado en `server/main.js` temporalmente/por diseño) Punto de entrada para la ventana nativa de Electron.
 
 ## Requisitos Previos
 
@@ -17,41 +18,37 @@ Aplicación web para auditoría de cumplimiento (ISO/UE AI Act) con validación 
 
 ## 🚀 Inicio Rápido (Desarrollo Local)
 
-### 1. Instalación Inicial
-Primero, prepará el entorno del Backend (Python) y validá tus variables de entorno:
+### 1. Preparar el Entorno del Backend (Python)
+Es **obligatorio** crear el entorno virtual e instalar las librerías para que el backend local funcione:
 ```bash
 cd server
 python -m venv venv
 # Activar entorno: Windows: venv\Scripts\activate | Mac/Linux: source venv/bin/activate
 pip install -r requirements.txt
-# Importante: Pegá el archivo .env que compartimos en la carpeta server/ y en client/
+# Importante: Pegá el archivo .env que compartimos en la carpeta server/
 cd ..
 ```
 
-Luego, instalá las dependencias del proyecto en la raíz:
+### 2. Instalación de Dependencias del Proyecto
+Necesitas instalar los paquetes de Node que controlan el arranque, el frontend y la ventana de Electron en la raíz del proyecto:
 ```bash
 npm install
 ```
 
-### 2. Ejecutar todo el proyecto (Frontend + Backend)
-Gracias a los scripts simplificados, podés levantar **ambos servidores al mismo tiempo** con un solo comando desde la raíz del proyecto:
+## ⚙️ Comandos de Ejecución
+
+Para simplificar el arranque y garantizar que siempre apuntemos a **credenciales de producción**, hemos definido dos scripts principales:
+
+### Opción A: Levantar solo el Frontend (Electron + UI)
+Útil si el backend ya está corriendo en la nube (AWS) o si lo arrancaste manualmente por separado en otra consola:
 ```bash
-npm start
+npm run start:frontend
 ```
-*(Esto levantará silenciosamente el servidor FastAPI y al mismo tiempo el Frontend en React apuntando a http://localhost:5173).*
+*(Esto ejecutará el servidor de desarrollo de Vite y abrirá la aplicación nativa de Electron).*
 
-
-## ⚙️ Modos Avanzados de Dev/Test
-
-### Escenario A: Testear Frontend Local contra Backend de Producción
-Si querés probar tu app de la compu directamente contra la API que ya tenés en AWS (sin levantar el backend local):
-1. Corré `npm run dev` normalmente.
-
-### Escenario B: Correr Proyecto con Backend en Entorno de Producción
-Si necesitas probar el código usando bases de datos, ChromaDB o componentes reales de AWS en lugar de los recursos locales:
-1. Asegurate de tener configurados todos los accesos directos de producción en tu archivo `server/.env.prod`.
-2. Ejecutá todo la aplicación junta (Frontend + Backend prod) desde la raíz usando:
-   ```bash
-   npm run start:prod
-   ```
-   *(Esto correrá Vite en desarrollo, y en paralelo, le ordenará a FastAPI que se inicie leyendo exclusivamente `.env.prod`).*
+### Opción B: Levantar Ambos (Frontend completo + Backend local en modo Producción)
+Útil para correr y depurar absolutamente todo en tu máquina usando la configuración real de producción (`.env.prod`):
+```bash
+npm run start:all
+```
+*(Esto levantará silenciosamente el servidor FastAPI usando `--env-file .env.prod`, arrancará Vite, y luego abrirá automáticamente la ventana de Electron).*
