@@ -51,4 +51,4 @@ npm run start:frontend
 ```bash
 npm run start:all
 ```
-*(Esto levantará silenciosamente el servidor FastAPI usando `--env-file .env.prod`, arrancará Vite, y luego abrirá automáticamente la ventana de Electron).*
+*(Esto levantará silenciosamente el servidor FastAPI usando `--env-file .env`, arrancará Vite, y luego abrirá automáticamente la ventana de Electron).*
