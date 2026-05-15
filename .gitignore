@@ -9,17 +9,31 @@ Icon
 .Spotlight-V100
 .Trashes
 .vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 !.vscode/extensions.json
-.idea
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.swp
 
 # ========================
 # Frontend (Node.js / Vite)
 # ========================
+node_modules/
+dist/
+dist-ssr/
+build/
+coverage/
+.npm/
+.eslintcache
+.vite/
+
+# Logs
 logs/
 *.log
 npm-debug.log*
@@ -27,10 +41,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-node_modules/
-dist/
-dist-ssr/
-*.local
 
 # ========================
 # Backend (Python / FastAPI)
@@ -39,24 +49,61 @@ dist-ssr/
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 
 # Entornos Virtuales
 .venv/
 venv/
 ENV/
 env/
+env.bak/
+venv.bak/
 
 # Cache y herramientas
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
 .coverage
 htmlcov/
 .tox/
 
 # ========================
+# Infraestructura (Terraform & AWS Lambda)
+# ========================
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+*tfplan*
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Empaquetados / Build de Lambda
+infra/lambda_build/
+infra/lambda_pkg/
+*.zip
+backend_payload*.zip
+
+# ========================
+# Bases de datos y Vector Stores
+# ========================
+*.sqlite3
+*.sqlite
+*.db
+chroma_db/
+.chromadb/
+
+# ========================
 # Secretos y Variables de Entorno
 # ========================
-# ¡CRÍTICO! Nunca commitear .env con credenciales (como AWS Keys)
 .env
 .env.*
 !.env.example
@@ -64,48 +111,11 @@ htmlcov/
 *.key
 
 # ========================
-# Infraestructura (Terraform)
+# Outputs Temporales y Pruebas
 # ========================
-# Directorio local de inicialización de terraform y modulos
-**/.terraform/*
-
-# Archivos de estado de terraform (PUEDEN CONTENER SECRETOS)
-*.tfstate
-*.tfstate.*
-
-# Archivos de variables con secretos
-*.tfvars
-*.tfvars.json
-
-# Crash logs
-crash.log
-crash.*.log
-
-# Archivos de planes (pueden contener secretos)
-*tfplan*
-
-# Overrides locales
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
-
-# Configuración CLI
-.terraformrc
-terraform.rc
-
-# ========================
-# Generados / Empaquetados / DBs
-# ========================
-# Bases de datos SQLite locales si hubiera
-*.sqlite3
-*.db
-
-# Zip files generados para deploys de Lambda
-*.zip
-backend_payload.zip
-infra/backend_payload*.zip
-
-# ChromaDB local storage (por si haces pruebas locales)
-chroma_db/
-.chromadb/
+payload.json
+response.json
+policy.json
+url_config.json
+all
+client/test-pdf/

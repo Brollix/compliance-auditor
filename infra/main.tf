@@ -97,6 +97,15 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
   }
 
+  # Acceso a la API FastAPI en puerto 8001
+  ingress {
+    description = "API FastAPI"
+    from_port   = 8001
+    to_port     = 8001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -170,6 +179,8 @@ data "aws_ami" "ubuntu_2204" {
 resource "aws_instance" "chromadb" {
   ami           = data.aws_ami.ubuntu_2204.id
   instance_type = "t3.micro" # Free Tier
+  key_name             = "complai"
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   associate_public_ip_address = true # Para que se pueda acceder desde internet/localIP
@@ -190,6 +201,56 @@ resource "aws_instance" "chromadb" {
   tags = {
     Name = "ChromaDB-Vector-Server"
   }
+}
+
+# ==========================================
+# Permisos (IAM Roles) para la EC2
+# ==========================================
+
+data "aws_iam_policy_document" "ec2_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ec2_role" {
+  name               = "AI_Auditor_EC2_Role"
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
+}
+
+resource "aws_iam_role_policy" "ec2_policy" {
+  name = "AI_Auditor_EC2_Policy"
+  role = aws_iam_role.ec2_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"]
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject", "s3:ListBucket"]
+        Resource = [aws_s3_bucket.auditoria_temp.arn, "${aws_s3_bucket.auditoria_temp.arn}/*"]
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem", "dynamodb:Scan", "dynamodb:Query"]
+        Resource = aws_dynamodb_table.audit_findings.arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "AI_Auditor_EC2_Profile"
+  role = aws_iam_role.ec2_role.name
 }
 
 # ==========================================
@@ -337,6 +398,28 @@ resource "aws_lambda_function" "ai_auditor_backend" {
   ]
 }
 
+resource "aws_lambda_function_url" "backend_url" {
+  function_name      = aws_lambda_function.ai_auditor_backend.function_name
+  authorization_type = "NONE"
+
+  cors {
+    allow_credentials = true
+    allow_origins     = ["*"]
+    allow_methods     = ["*"]
+    allow_headers     = ["*"]
+    expose_headers    = ["keep-alive", "date"]
+    max_age           = 86400
+  }
+}
+
+resource "aws_lambda_permission" "allow_public_url" {
+  statement_id           = "FunctionURLAllowPublicAccess"
+  action                 = "lambda:InvokeFunctionUrl"
+  function_name          = aws_lambda_function.ai_auditor_backend.function_name
+  principal              = "*"
+  function_url_auth_type = "NONE"
+}
+
 # ==========================================
 # Outputs
 # ==========================================
@@ -349,4 +432,9 @@ output "ec2_public_ip" {
 output "s3_bucket_name" {
   description = "Nombre del Bucket S3 de Auditoría Transitoria"
   value       = aws_s3_bucket.auditoria_temp.id
+}
+
+output "api_endpoint" {
+  description = "URL pública de la API en AWS Lambda"
+  value       = aws_lambda_function_url.backend_url.function_url
 }
