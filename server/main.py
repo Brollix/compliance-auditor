@@ -320,8 +320,8 @@ async def run_audit(request: AuditRequest):
                 # Try to get full text from InfoLEG for deeper RAG
                 law_full_text = None
                 if law.get('numero'):
-                    logger.info(f"Attempting to fetch full text for Law {law['numero']} from InfoLEG")
-                    law_full_text = state.infoleg_client.get_full_text(law['numero'])
+                    logger.info(f"Attempting to fetch full text for Law {law['numero']} ({law.get('tipo', 'Ley')}) from InfoLEG")
+                    law_full_text = state.infoleg_client.get_full_text(law['numero'], law.get('tipo', 'Ley'))
                 
                 if law_full_text:
                     logger.info(f"Successfully fetched full text for Law {law['numero']}. Using it for RAG.")
