@@ -6,7 +6,7 @@
   "main": "server/main.js",
   "scripts": {
     "dev": "vite",
-    "api:prod": "cd server && venv\\Scripts\\uvicorn main:app --reload --env-file .env.prod",
+    "api:prod": "cd server && .\\venv\\Scripts\\uvicorn main:app --reload --env-file .env --port 8001",
     "electron:start": "cross-env NODE_ENV=development electron .",
     "start:frontend": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && npm run electron:start\"",
     "start:all": "concurrently \"npm run api:prod\" \"npm run dev\" \"wait-on http://localhost:5173 && npm run electron:start\"",
